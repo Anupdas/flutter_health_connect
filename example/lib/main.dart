@@ -33,9 +33,9 @@ class _MyAppState extends State<MyApp> {
 
   final List<HealthConnectDataType> _types = [
     HealthConnectDataType.Steps,
-    HealthConnectDataType.Distance,
-    HealthConnectDataType.ExerciseSession,
-    HealthConnectDataType.TotalCaloriesBurned,
+    // HealthConnectDataType.Distance,
+    // HealthConnectDataType.ExerciseSession,
+    // HealthConnectDataType.TotalCaloriesBurned,
     // HealthConnectDataType.HeartRate,
     // HealthConnectDataType.SleepSession,
     // HealthConnectDataType.OxygenSaturation,
@@ -305,12 +305,12 @@ class _MyAppState extends State<MyApp> {
       final DateTime startTime =
           DateTime.now().subtract(const Duration(days: 180));
       final DateTime endTime = DateTime.now();
-      final Map<String, dynamic> result = await HealthConnectFactory.aggregate(
+      final Map<String, num> result = await HealthConnectFactory.aggregate(
         aggregationKeys: [
           StepsRecord.aggregationKeyCountTotal,
-          DistanceRecord.aggregationKeyDistanceTotal,
-          ExerciseSessionRecord.aggregationKeyExerciseDurationTotal,
-          TotalCaloriesBurnedRecord.aggregationKeyEnergyTotal,
+          //DistanceRecord.aggregationKeyDistanceTotal,
+          //ExerciseSessionRecord.aggregationKeyExerciseDurationTotal,
+          //TotalCaloriesBurnedRecord.aggregationKeyEnergyTotal,
         ],
         startTime: startTime,
         endTime: endTime,
