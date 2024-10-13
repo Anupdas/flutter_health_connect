@@ -33,7 +33,9 @@ class _MyAppState extends State<MyApp> {
 
   final List<HealthConnectDataType> _types = [
     HealthConnectDataType.Steps,
+    HealthConnectDataType.Distance,
     HealthConnectDataType.ExerciseSession,
+    HealthConnectDataType.TotalCaloriesBurned,
     // HealthConnectDataType.HeartRate,
     // HealthConnectDataType.SleepSession,
     // HealthConnectDataType.OxygenSaturation,
@@ -194,7 +196,9 @@ class _MyAppState extends State<MyApp> {
       final DateTime endTime = DateTime.now();
       final List<Future<dynamic>> requests = [];
       final Map<String, dynamic> typePoints = {};
-      for (final HealthConnectDataType type in _types) {
+      final dataTypes = [HealthConnectDataType.ExerciseSession];
+
+      for (final HealthConnectDataType type in dataTypes) {
         requests.add(
           HealthConnectFactory.getRecords(
             type: type,
@@ -299,12 +303,14 @@ class _MyAppState extends State<MyApp> {
   void _onGetAggregatedDataButtonTap() async {
     try {
       final DateTime startTime =
-          DateTime.now().subtract(const Duration(days: 1));
+          DateTime.now().subtract(const Duration(days: 180));
       final DateTime endTime = DateTime.now();
-      final Map<String, double> result = await HealthConnectFactory.aggregate(
+      final Map<String, dynamic> result = await HealthConnectFactory.aggregate(
         aggregationKeys: [
           StepsRecord.aggregationKeyCountTotal,
+          DistanceRecord.aggregationKeyDistanceTotal,
           ExerciseSessionRecord.aggregationKeyExerciseDurationTotal,
+          TotalCaloriesBurnedRecord.aggregationKeyEnergyTotal,
         ],
         startTime: startTime,
         endTime: endTime,
