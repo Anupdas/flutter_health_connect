@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,8 +195,8 @@ class _MyAppState extends State<MyApp> {
       final DateTime startTime =
           DateTime.now().subtract(const Duration(days: 4));
       final DateTime endTime = DateTime.now();
-      final List<Future<dynamic>> requests = [];
       final Map<String, dynamic> typePoints = {};
+      final List<Future<dynamic>> requests = [];
       final dataTypes = [HealthConnectDataType.ExerciseSession];
 
       for (final HealthConnectDataType type in dataTypes) {
@@ -210,7 +211,9 @@ class _MyAppState extends State<MyApp> {
         );
       }
       await Future.wait(requests);
-      _updateResultText('$typePoints');
+      final jsonString = jsonEncode(typePoints);
+      debugPrint(jsonString);
+      _updateResultText(jsonString);
     } catch (e, stackTrace) {
       final String errorMessage = '$e,\n$stackTrace';
       debugPrint(errorMessage);

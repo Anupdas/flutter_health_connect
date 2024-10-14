@@ -211,17 +211,25 @@ class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : F
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == HEALTH_CONNECT_RESULT_CODE) {
-            val result = permissionResult
-            permissionResult = null
-            if (result != null && resultCode == Activity.RESULT_OK && data != null) {
-                scope.launch {
-                    result.success(true)
+    if (requestCode == HEALTH_CONNECT_RESULT_CODE) {
+        val result = permissionResult
+        permissionResult = null
+        
+            when {
+                result != null && resultCode == Activity.RESULT_OK && data != null -> {
+                    scope.launch {
+                        result.success(true)
+                    }
+                    return true
                 }
-                return true
-            }
-            scope.launch {
-                result?.success(false)
+                result != null -> {
+                    scope.launch {
+                        result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
+                    }
+                }
+                else -> {
+                    Log.e("HealthConnect", "Unexpected null result in onActivityResult")
+                }
             }
         }
         return false
