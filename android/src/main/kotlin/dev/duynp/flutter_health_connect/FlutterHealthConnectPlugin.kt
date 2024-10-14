@@ -227,9 +227,6 @@ class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : F
                         result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
                     }
                 }
-                else -> {
-                    Log.e("HealthConnect", "Unexpected null result in onActivityResult")
-                }
             }
         }
         return false
