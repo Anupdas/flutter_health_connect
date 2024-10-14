@@ -214,19 +214,15 @@ class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : F
     if (requestCode == HEALTH_CONNECT_RESULT_CODE) {
         val result = permissionResult
         permissionResult = null
-        
+        if (result != null) {
             when {
-                result != null && resultCode == Activity.RESULT_OK && data != null -> {
-                    scope.launch {
+                resultCode == Activity.RESULT_OK && data != null -> {
                         result.success(true)
-                    }
-                    return true
+                } else -> {
+                    result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
                 }
-                result != null -> {
-                    scope.launch {
-                        result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
-                    }
-                }
+              }
+              return true
             }
         }
         return false
