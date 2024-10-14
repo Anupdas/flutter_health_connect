@@ -210,30 +210,46 @@ class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : F
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-    if (requestCode == HEALTH_CONNECT_RESULT_CODE) {
-        val result = permissionResult
-        permissionResult = null
-        if (result != null) {
-            when {
-                resultCode == Activity.RESULT_OK && data != null -> {
-                        result.success(true)
-                } else -> {
-                    result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
-                }
-              }
-              return true
-            }
-        }
-        return false
-    }
+    private var permissionResultHandled = false
 
     private fun onHealthConnectPermissionCallback(permissionGranted: Set<String>) {
-        if (permissionGranted.isEmpty()) {
-            permissionResult?.success(false)
-        } else {
-            permissionResult?.success(true)
+        if (!permissionResultHandled) {
+            permissionResultHandled = true
+            val result = permissionResult
+            permissionResult = null
+            if (result != null) {
+                if (permissionGranted.isEmpty()) {
+                    result.error("PERMISSION_DENIED", "Health Connect permissions were denied", null)
+                } else {
+                    result.success(true)
+                }
+            } else {
+                println("HealthConnect: Unexpected null result in onHealthConnectPermissionCallback")
+            }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        if (requestCode == HEALTH_CONNECT_RESULT_CODE && !permissionResultHandled) {
+            permissionResultHandled = true
+            val result = permissionResult
+            permissionResult = null
+        
+            if (result != null) {
+                when {
+                    resultCode == Activity.RESULT_OK && data != null -> {
+                        result.success(true)
+                    }
+                    else -> {
+                        result.error("PERMISSION_DENIED", "Health Connect permission was denied", null)
+                    }
+                }
+            } else {
+                println("HealthConnect: Unexpected null result in onActivityResult")
+            }
+        return true
+    }
+        return false
     }
 
     private fun checkIfApiReady(): Boolean {
