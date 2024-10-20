@@ -30,7 +30,7 @@ android {
         namespace 'dev.duynp.flutter_health_connect'
     }
 
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -46,13 +46,13 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 28
     }
 }
 
 dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
-    implementation "androidx.health.connect:connect-client:1.1.0-alpha07"
+    implementation "androidx.health.connect:connect-client:1.1.0-alpha10"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
