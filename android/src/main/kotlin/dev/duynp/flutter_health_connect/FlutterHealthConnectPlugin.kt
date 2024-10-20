@@ -85,6 +85,7 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
+import java.time.Duration
 
 class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : FlutterPlugin,
     MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
@@ -582,12 +583,17 @@ class FlutterHealthConnectPlugin(private var channel: MethodChannel? = null) : F
                         )
                     )
 
-                    val resultData = aggregationKeys.associateBy({ it }, {
-                        replyMapper.convertValue(
-                            response[HealthConnectAggregateMetricTypeMap[it]!!],
-                            Double::class.java
-                        )
-                    })
+                    val resultData = aggregationKeys.associateBy({ it }) { key ->
+                    val rawValue = response[HealthConnectAggregateMetricTypeMap[key]!!]
+                    val value:Number? = when (rawValue) {
+                            is Number -> rawValue
+                            is Length -> rawValue.inMeters
+                            is Energy -> rawValue.inKilocalories
+                            is Duration -> rawValue.seconds
+                            else -> rawValue.toString().split(" ").firstOrNull()?.toDoubleOrNull()
+                        }
+                        value ?: 0.0
+                    }
                     result.success(resultData)
                 }
             } catch (e: SecurityException) {
